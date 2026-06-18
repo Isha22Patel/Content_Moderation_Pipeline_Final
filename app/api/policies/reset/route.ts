@@ -69,6 +69,14 @@ const DEFAULT_PLATFORMS = [
 ];
 
 export async function POST() {
+  return seed();
+}
+
+export async function GET() {
+  return seed();
+}
+
+async function seed() {
   await prisma.customRule.deleteMany({});
   await prisma.categoryPolicy.deleteMany({});
   await prisma.platform.deleteMany({});
