@@ -4,7 +4,7 @@ import { prisma } from '../../../lib/database/prisma';
 export async function GET() {
   let dbStatus = 'disconnected';
   try {
-    await prisma.$queryRaw\`SELECT 1\`;
+    await prisma.$queryRaw`SELECT 1`;
     dbStatus = 'connected';
   } catch (err) {
     dbStatus = 'error';

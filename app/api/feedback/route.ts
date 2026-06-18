@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/database/prisma';
+import { prisma } from '../../../lib/database/prisma';
 
 export async function GET() {
   const overrides = await prisma.reviewOutcome.findMany({

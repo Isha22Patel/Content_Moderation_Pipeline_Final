@@ -72,7 +72,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (customRules !== undefined) {
       await prisma.customRule.deleteMany({ where: { platformId: id } });
       const ops = customRules.map((rule: any) => {
-        const rid = rule.id || \`rule_\${Date.now()}_\${Math.random().toString(36).slice(2, 5)}\`;
+        const rid = rule.id || `rule_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`;
         return prisma.customRule.create({
           data: {
             id: rid,
