@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Platform {
+  id               String            @id
+  name             String
+  description      String?
+  categoryPolicies CategoryPolicy[]
+  customRules      CustomRule[]
+}
+
+model CategoryPolicy {
+  id                  Int      @id @default(autoincrement())
+  platformId          String
+  platform            Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  category            String
+  enabled             Boolean  @default(true)
+  reviewThreshold     Float    @default(0.45)
+  autoActionThreshold Float    @default(0.85)
+
+  @@unique([platformId, category])
+  @@map("category_policies")
+}
+
+model CustomRule {
+  id          String   @id
+  platformId  String
+  platform    Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  description String?
+  contains    String
+  category    String
+  action      String
+
+  @@map("custom_rules")
+}
+
+model ContentRecord {
+  id               String          @id
+  content          String
+  platformId       String
+  surface          String?
+  userHistory      String?
+  thread           String?         @default("[]")
+  flags            String?         @default("[]")
+  overallReasoning String?
+  contextNotes     String?
+  modelUsed        String?
+  latencyMs        Int?
+  action           String
+  routing          String
+  perFlag          String?         @default("[]")
+  primaryFlag      String?
+  decisionSummary  String?
+  policyId         String?
+  policyName       String?
+  createdAt        String
+  reviewOutcome    ReviewOutcome?
+
+  @@map("content_records")
+}
+
+model ReviewOutcome {
+  id           Int           @id @default(autoincrement())
+  recordId     String        @unique
+  record       ContentRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  reviewer     String
+  finalAction  String
+  overrodeAi   Boolean       @default(false)
+  notes        String?
+  reviewedAt   String
+
+  @@map("review_outcomes")
+}
