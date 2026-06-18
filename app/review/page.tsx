@@ -51,7 +51,7 @@ export default function ReviewQueue() {
       setQueue(q);
       setStats(s);
       if (selected) {
-        const stillInQueue = q.find((r) => r.id === selected.id);
+        const stillInQueue = q.find((r: any) => r.id === selected.id);
         setSelected(stillInQueue ?? null);
       }
     } catch (e: any) {
