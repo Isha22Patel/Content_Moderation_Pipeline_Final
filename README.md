@@ -47,7 +47,7 @@ An AI-powered, multi-stage content moderation system built with **Next.js 16**, 
 │  └────────────────────────────────────────────────────────────┘  │
 │                              │                                  │
 │  ┌───────────────────────────▼──────────────────────────────┐   │
-│  │              PostgreSQL (via Prisma ORM)                  │   │
+│  │                SQLite (via Prisma ORM)                    │   │
 │  │  Platforms · CategoryPolicies · CustomRules               │   │
 │  │  ContentRecords · ReviewOutcomes                          │   │
 │  └──────────────────────────────────────────────────────────┘   │
@@ -64,7 +64,7 @@ An AI-powered, multi-stage content moderation system built with **Next.js 16**, 
    - `confidence < reviewThreshold` → **auto-allow**
 4. **Custom rules** are evaluated next — substring matches override model confidence.
 5. The **most severe** per-flag action wins as the aggregate decision.
-6. The full record (content, flags, reasoning, decision) is **persisted** to PostgreSQL.
+6. The full record (content, flags, reasoning, decision) is **persisted** to SQLite.
 7. If routed to `human_review`, the record appears in the **Review Queue** for a moderator to make the final call.
 
 ---
@@ -125,7 +125,7 @@ content-moderation-next/
 
 - **Node.js** ≥ 18
 - **npm** (bundled with Node.js)
-- **PostgreSQL** database (or use [Neon](https://neon.tech) for serverless Postgres)
+- **SQLite** database (file-based, no external hosting required for local development)
 - **Groq API key** — get one free at [console.groq.com](https://console.groq.com)
 
 ### 1. Clone & Install
@@ -141,8 +141,8 @@ npm install
 Create a `.env.local` file (or set these in your hosting provider):
 
 ```env
-# Required — PostgreSQL connection string
-DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
+# Required — SQLite connection string
+DATABASE_URL="file:./prisma/dev.db"
 
 # Required — Groq API key for LLM classification
 GROQ_API_KEY="gsk_your_api_key_here"
@@ -339,7 +339,7 @@ Per-platform configuration with:
 
 ## 🗄️ Database Schema
 
-The app uses **5 Prisma models** backed by PostgreSQL:
+The app uses **5 Prisma models** backed by SQLite:
 
 | Model | Purpose |
 |---|---|
@@ -373,10 +373,7 @@ The project includes a `vercel.json` pre-configured for deployment:
 
 ### Database Hosting
 
-Recommended providers for PostgreSQL:
-- **[Neon](https://neon.tech)** — serverless Postgres, generous free tier
-- **[Supabase](https://supabase.com)** — managed Postgres with extras
-- **[Railway](https://railway.app)** — simple managed Postgres
+Since SQLite is a file-based database, it runs seamlessly within your local environment. If you deploy to production (like Vercel), remember that the filesystem is ephemeral, so a different hosted database (like PostgreSQL with Neon or Supabase) would be needed to persist data across deployments.
 
 ---
 
@@ -408,7 +405,7 @@ npx prisma studio
 | [Next.js 16](https://nextjs.org) | Full-stack React framework (App Router) |
 | [React 19](https://react.dev) | UI library |
 | [Prisma](https://prisma.io) | Type-safe database ORM |
-| [PostgreSQL](https://postgresql.org) | Relational database |
+| [SQLite](https://sqlite.org) | Relational database |
 | [Groq SDK](https://console.groq.com) | LLM inference API (LLaMA 3.3 70B) |
 | [TypeScript](https://typescriptlang.org) | Type safety across the stack |
 
